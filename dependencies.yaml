@@ -1,0 +1,7 @@
+ros:
+  - build: ament-cmake
+  - run: rviz2
+  - run: robot-state-publisher
+  - run: joint-state-publisher
+  - run: xacro
+  - run: urdf

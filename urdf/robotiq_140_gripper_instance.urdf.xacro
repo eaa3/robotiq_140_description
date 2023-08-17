@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<robot name="robotiq_arg2f_140_model" xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <xacro:macro name="robotiq140_end_effector" params="name:=robotiq140_end_effector prefix:='' ">
+    
+    <xacro:include filename="$(find robotiq_140_description)/urdf/robotiq_arg2f_140_model_macro.xacro" />
+    <xacro:include filename="$(find robotiq_140_description)/urdf/robotiq_arg2f_coupling.xacro" />
+    
+
+    <xacro:property name="eps" value="1.0E-6" />
+
+    <!-- 
+      
+      Obs.: 
+      
+      In ROS humble rviz will complain about unrealistic inertia for the fixed links. 
+      It is safe to ignore that. This has been fixed in the rolling distribution (future ROS2).
+      See: https://github.com/ros2/rviz/pull/874
+    
+    -->
+
+    <!-- Dummy mount -->
+    <link name="lfr_ee_mount">
+      <inertial>
+          <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+          <mass value="${eps}" />
+          <inertia ixx="${eps}" iyy="${eps}" izz="${eps}" ixy="${eps}" ixz="${eps}" iyz="${eps}" />
+      </inertial>
+    </link>
+
+    <xacro:robotiq_arg2f_coupling xyz="0 0 0.0" rpy="0 0 0" connected_to="lfr_ee_mount" prefix="${prefix}"/>
+    <xacro:robotiq_arg2f_140 xyz="0 0 0.0" rpy="0 0 0" connected_to="robotiq_arg2f_coupling" prefix="${prefix}"/>
+
+    <!-- Add end-effector marker -->
+    <link name="${prefix}lfr_ee_payload">
+        <inertial>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <mass value="${eps}" />
+            <inertia ixx="${eps}" iyy="${eps}" izz="${eps}" ixy="${eps}" ixz="${eps}" iyz="${eps}" />
+        </inertial>
+    </link>
+    <joint name="${prefix}jfr_ee_payload" type="fixed">
+      <origin rpy="0 0 ${pi}" xyz="0 0 0.215"/>
+      <parent link="${prefix}robotiq_arg2f_base_link"/>
+      <child link="${prefix}lfr_ee_payload"/>
+      <axis xyz="0 0 0"/>
+    </joint>
+
+  </xacro:macro>
+
+  <xacro:arg name="prefix" default=""/>
+  <xacro:robotiq140_end_effector name="robotiq140_end_effector" prefix="$(arg prefix)"/> 
+
+ 
+</robot>

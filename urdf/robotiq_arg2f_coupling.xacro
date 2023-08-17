@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:macro name="robotiq_arg2f_coupling" params="connected_to:='' rpy:='0 0 0' xyz:='0 0 0' prefix:=''">
+    <link name="${prefix}robotiq_arg2f_coupling">
+      <!-- <inertial>
+        <origin xyz="8.625E-08 -4.6583E-06 0.03145" rpy="0 0 0" />
+        <mass value="0.22652" />
+        <inertia ixx="0.00020005" ixy="-4.2442E-10" ixz="-2.9069E-10" iyy="0.00017832" iyz="-3.4402E-08" izz="0.00013478" />
+      </inertial> -->
+
+      <xacro:property name="eps" value="1.0E-6" />
+
+      <inertial>
+          <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+          <mass value="${eps}" />
+          <inertia ixx="${eps}" iyy="${eps}" izz="${eps}" ixy="${eps}" ixz="${eps}" iyz="${eps}" />
+      </inertial>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="file://$(find robotiq_140_description)/meshes/visual/robotiq_arg2f_coupling.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="link">
+          <color rgba="0.1 0.1 0.1 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="file://$(find robotiq_140_description)/meshes/collision/robotiq_arg2f_coupling.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+    </link>
+    <xacro:unless value="${connected_to == ''}">
+      <joint name="${prefix}_coupling_joint" type="fixed">
+        <parent link="${prefix}${connected_to}"/>
+        <child link="${prefix}robotiq_arg2f_coupling"/>
+        <origin xyz="${xyz}" rpy="${rpy}"/>
+      </joint>
+    </xacro:unless>
+  </xacro:macro>
+</robot>
